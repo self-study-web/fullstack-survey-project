@@ -22,9 +22,26 @@ passport.use(
       clientID: keys.googleClientID,
       clientSecret: keys.googleClientSecret,
       callbackURL: '/auth/google/callback',
-      proxy: true // to deal with http \/https issue with heroku proxy
+      proxy: true // to deal with http/https issue with heroku proxy
     },
-    (accessToken, refreshToken, profile, done) => {
+    async (accessToken, refreshToken, profile, done) => {
+      // accessToken is something we use if we want to access users contact list etc.
+      // refreshToken - can be used to refresh the accessToken
+      const existingUser = await User.findOne({ googleId: profile.id });
+      if (existingUser) {
+        // we have a record with the given profile Id
+        done(null, existingUser); // First argument is an error object , second user record.
+        // We call done to let passport know tha we have completed creating user (saving to the db) , and passport can proceed with the authentication flow
+      }
+      // we dont have a user record with a profile id, create a new one
+      const user = await User({ googleId: profile.id }).save();
+      done(null, user);
+    }
+  )
+);
+
+/*
+   (accessToken, refreshToken, profile, done) => {
       // accessToken is something we use if we want to access users contact list etc.
       // refreshToken - can be used to refresh the accessToken
       User.findOne({ googleId: profile.id }).then(existingUser => {
@@ -42,5 +59,5 @@ passport.use(
         }
       });
     }
-  )
-);
+
+*/

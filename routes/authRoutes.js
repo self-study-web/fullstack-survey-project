@@ -9,11 +9,17 @@ module.exports = app => {
 
   // Even though the right handlers look very similar , passport understands the code in the url,
   // so it will exchange the code for actual user profile
-  app.get('/auth/google/callback', passport.authenticate('google'));
+  app.get(
+    '/auth/google/callback',
+    passport.authenticate('google'),
+    (req, res) => {
+      res.redirect('/surveys');
+    }
+  );
 
   app.get('/api/logout', (req, res) => {
     req.logout(); // logout is  a function that is attached to req object by passport, it kills the id in the cookie
-    res.send(req.user);
+    res.redirect('/');
   });
 
   app.get('/api/current_user', (req, res) => {

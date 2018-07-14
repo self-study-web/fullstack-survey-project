@@ -4,7 +4,10 @@ const { Schema } = mongoose;
 
 // We need to define all attributes.With mongoose, we loose mongo's ability to add dynamic fields,
 // but we can add fields anytime here
-const userSchema = new Schema({ googleId: String });
+const userSchema = new Schema({
+  googleId: String,
+  credits: { type: Number, default: 0 }
+});
 
 // creates a collection, if it does not exists
 mongoose.model('users', userSchema);
