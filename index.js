@@ -7,6 +7,7 @@ const keys = require('./config/keys');
 // We need to require passport to include it in the project.
 // This is not returning/exporting anything
 require('./models/User'); // will ensure when the app boots up, it will load the User model class and will create the collection
+require('./models/Survey');
 require('./services/passport'); // The order of the require statements matter here, first User has to be created
 
 mongoose.connect(keys.mongoURI);
@@ -25,6 +26,7 @@ app.use(passport.session());
 
 require('./routes/authRoutes')(app);
 require('./routes/billingRoutes')(app);
+require('./routes/surveyRoutes')(app);
 
 if (process.env.NODE_ENV === 'production') {
   // Express will serve the production assets like
